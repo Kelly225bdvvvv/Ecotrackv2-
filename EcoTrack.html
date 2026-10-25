@@ -1,0 +1,710 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta charset="utf-8">
+<title>EcoTrack</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#14532d; --green:#1f7a43; --ink:#12301c; --muted:#44594a; --bg:#f2f7f0;
+  --card:#ffffff; --line:#dfe8dc; --err:#8a1c1c; --focus:#1d4ed8; --field:#6f8a76;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:#d9e6d6; color:var(--ink);
+  font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  display:flex; justify-content:center;
+}
+button,input,select{font-family:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+h1,h2,h3,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+
+.phone{
+  position:relative; width:100%; max-width:430px; height:100%;
+  display:flex; flex-direction:column; overflow:hidden; background:var(--bg);
+}
+@media (min-width:600px){
+  body{align-items:center;min-height:100vh}
+  .phone{height:min(900px,96vh); border-radius:36px; box-shadow:0 20px 60px rgba(18,48,28,.25)}
+}
+.screen{flex:1 1 0; min-height:0; overflow-y:auto; display:flex; flex-direction:column}
+.pad{padding:8px 20px 28px; display:flex; flex-direction:column; gap:20px}
+
+/* header */
+.hdr{padding:24px 20px 8px; display:flex; flex-direction:column; gap:4px}
+.hdr.row{flex-direction:row; align-items:center; justify-content:space-between; gap:12px; padding-top:28px}
+.title{font-size:24px; font-weight:800; letter-spacing:-.3px}
+.sub{font-size:14px; font-weight:500; color:var(--muted)}
+h1:focus{outline:none}
+.back{align-self:flex-start; min-height:44px; padding-right:12px; display:flex; align-items:center; gap:4px; color:var(--brand); font-size:15px; font-weight:700}
+.h2{font-size:18px; font-weight:800}
+
+/* cards */
+.card{background:var(--card); border-radius:20px; box-shadow:0 1px 4px rgba(18,48,28,.10); padding:16px}
+.hero{position:relative; overflow:hidden; border-radius:24px; color:#fff; padding:22px;
+  background:linear-gradient(135deg,#1f7a43 0%,#175c33 100%); display:flex; flex-direction:column; gap:6px}
+.hero>*{position:relative}
+.hero .art{position:absolute; right:-8px; bottom:-6px; pointer-events:none}
+.big{font-size:52px; font-weight:800; line-height:1.05; letter-spacing:-1px}
+.big small{font-size:26px; font-weight:700; letter-spacing:0}
+
+/* buttons */
+.btn{min-height:52px; padding:0 24px; border:0; border-radius:26px; background:var(--brand); color:#fff;
+  font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:8px}
+.btn.out{background:#fff; color:var(--brand); border:2px solid var(--brand)}
+.btn.sm{min-height:44px; padding:0 14px; font-size:13px; border-radius:22px}
+.btn[disabled]{background:#fff; color:var(--muted); border:2px solid #9db3a2; cursor:not-allowed}
+.btn.white{background:#fff; color:var(--brand)}
+.circle{width:48px; height:48px; border-radius:24px; border:2px solid #fff; background:transparent; color:#fff; display:flex; align-items:center; justify-content:center; padding:0}
+.chip{flex:0 0 auto; min-height:44px; padding:0 16px; border:2px solid #9db3a2; border-radius:22px; background:#fff; color:var(--ink);
+  font-size:14px; font-weight:600; display:flex; align-items:center; gap:6px}
+.chip[aria-pressed="true"]{background:var(--brand); border-color:var(--brand); color:#fff; font-weight:700}
+
+/* fields */
+label{font-size:14px; font-weight:700}
+.field{display:flex; flex-direction:column; gap:6px}
+input[type=text],input[type=number],input[type=search],select{
+  min-height:48px; padding:0 12px; border:1px solid var(--field); border-radius:12px; background:#fff; font-size:15px; color:var(--ink); width:100%}
+.hint{font-size:13px; font-weight:500; color:var(--muted)}
+.error{display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--err)}
+.msg{min-height:20px; font-size:14px; font-weight:700; color:var(--brand)}
+
+/* progress bar */
+.bar{height:12px; border-radius:6px; background:rgba(255,255,255,.3); overflow:hidden}
+.bar>i{display:block; height:100%; border-radius:6px; background:#fff}
+.mbar{height:10px; border-radius:5px; background:#e3ece1; overflow:hidden}
+.mbar>i{display:block; height:100%; border-radius:5px; background:var(--green)}
+
+/* splash */
+.splash{flex:1; position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; color:#fff;
+  background:linear-gradient(180deg,#17613a 0%,#23814a 50%,#2f8f4e 100%)}
+.splash .scene{position:absolute; left:0; right:0; bottom:0; width:100%; height:420px}
+.splash .brand{position:relative; margin-top:18vh; display:flex; flex-direction:column; align-items:center; gap:14px; text-align:center}
+.splash h1{font-size:52px; font-weight:800; letter-spacing:-1px}
+.splash .tag{font-size:20px; font-weight:600; line-height:1.35}
+.splash .cta{position:absolute; left:0; right:0; bottom:0; padding:0 32px 40px; display:flex; flex-direction:column; gap:8px}
+.splash .link{min-height:48px; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:600; color:#fff}
+
+/* home tiles */
+.tiles{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+.tile{min-height:132px; padding:16px 8px 14px; border-radius:20px; background:#fff; box-shadow:0 1px 4px rgba(18,48,28,.10);
+  display:flex; flex-direction:column; align-items:center; gap:10px; font-size:13px; font-weight:700; line-height:1.25; text-align:center}
+.tile .ic,.ic{width:56px; height:56px; border-radius:28px; background:#e3f1e2; color:var(--brand); display:flex; align-items:center; justify-content:center; flex:0 0 auto}
+.tile .ic.blue{background:#dcebf7; color:#1d5fa8}
+.banner{position:relative; overflow:hidden; border-radius:24px; padding:24px 22px; min-height:150px; color:#fff; display:flex; align-items:center;
+  background:linear-gradient(135deg,#2e8a4a 0%,#1b6b3b 100%)}
+.banner p{position:relative; max-width:200px; font-size:22px; font-weight:800; line-height:1.25; letter-spacing:-.3px}
+.banner svg{position:absolute; right:0; bottom:0}
+.avatar{flex:0 0 auto; width:48px; height:48px; border-radius:24px; border:2px solid var(--brand); background:#fff; color:var(--brand); display:flex; align-items:center; justify-content:center}
+
+/* tabs */
+.tabs{flex:0 0 auto; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:2px; padding:4px 8px 12px; background:#fff; border-top:1px solid var(--line)}
+.tab{min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; color:#566a5c; font-size:11px; font-weight:600}
+.tab i{width:24px; height:3px; border-radius:2px; background:transparent}
+.tab.on{color:var(--brand); font-weight:800}
+.tab.on i{background:currentColor}
+
+/* map */
+.map{position:relative; height:200px; border-radius:20px; overflow:hidden; background:#dcebd8; margin:4px 20px 0; flex:0 0 auto}
+.map svg.bg{position:absolute; inset:0; width:100%; height:100%}
+.pin{position:absolute; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:22px; border:3px solid #fff; background:var(--brand); color:#fff;
+  font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; padding:0; box-shadow:0 2px 6px rgba(18,48,28,.3)}
+.me{position:absolute; left:50%; top:52%; width:22px; height:22px; margin:-11px 0 0 -11px; border-radius:11px; background:#1d5fa8; border:4px solid #fff; box-shadow:0 0 0 6px rgba(29,95,168,.25)}
+.legend{position:absolute; left:10px; bottom:8px; padding:3px 10px; border-radius:12px; background:#fff; font-size:12px; font-weight:600}
+.chips{display:flex; gap:8px; overflow-x:auto; padding:12px 20px 8px; flex:0 0 auto}
+.center h3{font-size:16px; font-weight:800; line-height:1.25}
+.num{flex:0 0 auto; width:32px; height:32px; border-radius:16px; background:var(--brand); color:#fff; font-size:14px; font-weight:800; display:flex; align-items:center; justify-content:center}
+.open{display:flex; align-items:center; gap:6px; font-size:14px; font-weight:700; color:var(--brand)}
+.closed{display:flex; align-items:center; gap:6px; font-size:14px; font-weight:700; color:var(--err)}
+
+/* scan */
+.cam{position:relative; margin:0 20px; height:min(452px,52vh); min-height:320px; border-radius:24px; overflow:hidden; background:#0f1f15; color:#fff; flex:0 0 auto}
+.cam video,.cam img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
+.cam .frame{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+.cam .center-box{position:absolute; inset:0; padding:0 36px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center}
+.cam .center-box p.s{font-size:14px; font-weight:500; line-height:1.45; color:#e3efe4}
+.shutter{width:76px; height:76px; border-radius:38px; border:5px solid var(--brand); background:#fff; padding:0; display:flex; align-items:center; justify-content:center}
+.shutter i{width:52px; height:52px; border-radius:26px; background:var(--brand)}
+.controls{display:flex; align-items:center; justify-content:center; gap:16px; padding:16px 20px; min-height:104px; flex-wrap:wrap}
+.badge{position:absolute; left:16px; top:16px; padding:6px 14px; border-radius:16px; background:#fff; color:var(--brand); font-size:14px; font-weight:800}
+
+/* rewards / lists */
+.row{display:flex; align-items:center; gap:14px}
+.grow{flex:1 1 auto; min-width:0}
+.ms{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px}
+.ms li{padding:8px 4px; border-radius:12px; border:2px solid #c9d8cb; display:flex; flex-direction:column; align-items:center; gap:2px; text-align:center}
+.badges{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px}
+.badges li{padding:14px 8px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:8px; font-size:12px; font-weight:800}
+.badge-ic{width:48px; height:48px; border-radius:24px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center}
+.badge-ic.off{background:#eceeea; color:var(--muted)}
+.pace{align-self:flex-start; padding:6px 12px; border-radius:16px; font-size:14px; font-weight:800; display:flex; align-items:center; gap:6px}
+.pace.good{background:#e3f1e2; color:var(--brand)}
+.pace.bad{background:#fdeceb; color:var(--err)}
+.switch{flex:0 0 auto; min-height:48px; border-radius:24px; font-size:13px; font-weight:800; display:flex; align-items:center; gap:8px; padding:0 6px 0 14px; border:2px solid var(--brand); background:var(--brand); color:#fff}
+.switch i{width:32px; height:32px; border-radius:16px; background:#fff}
+.switch[aria-checked="false"]{background:#fff; color:var(--ink); border-color:#566a5c; padding:0 14px 0 6px; flex-direction:row-reverse}
+.switch[aria-checked="false"] i{background:#566a5c; width:28px; height:28px; border-radius:14px}
+.seg{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px}
+.seg .chip{justify-content:center; min-height:48px; border-radius:24px}
+.rm{flex:0 0 auto; width:44px; height:44px; border:2px solid var(--err); border-radius:22px; background:#fff; color:var(--err); display:flex; align-items:center; justify-content:center; padding:0}
+.reset{background:none; border:0; min-height:44px; color:var(--muted); font-size:13px; font-weight:600; text-decoration:underline}
+</style>
+<div class="phone" id="phone">
+  <main class="screen" id="screen"></main>
+  <nav class="tabs" id="tabs" aria-label="Main" hidden></nav>
+</div>
+<div id="live" class="sr-only" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+'use strict';
+
+/* =====================================================================
+   DATA: replace these with your real data / API calls when you build.
+   ===================================================================== */
+var CENTERS = [
+  { n: 1, id: 'center-1', name: 'Riverside Recycling Hub',     km: 0.8, open: true,  hours: 'Open until 6:00 PM',   mats: ['Plastic','Glass','Paper','Metal'], cx: 18, cy: 26 },
+  { n: 2, id: 'center-2', name: 'Green Corner Drop-off',       km: 1.4, open: true,  hours: 'Open until 5:00 PM',   mats: ['Plastic','Paper'],                 cx: 62, cy: 12 },
+  { n: 3, id: 'center-3', name: 'Eastside Materials Facility', km: 2.6, open: false, hours: 'Closed, opens 8:00 AM', mats: ['Glass','Metal','E-waste'],         cx: 82, cy: 52 },
+  { n: 4, id: 'center-4', name: 'Tech Take-Back Point',        km: 3.1, open: true,  hours: 'Open until 8:00 PM',   mats: ['E-waste'],                         cx: 32, cy: 70 }
+];
+var REWARDS = [
+  { id: 'tote',    name: 'Reusable tote bag',     cost: 500,  icon: 'bag'  },
+  { id: 'tree',    name: 'Plant a tree',          cost: 900,  icon: 'tree' },
+  { id: 'voucher', name: 'Partner store voucher', cost: 1500, icon: 'gift' }
+];
+var LIFETIME_POINTS = 1280, NEXT_LEVEL_AT = 1700, LEVEL = 3;
+var MATS = [['plastic','Plastic'],['paper','Paper'],['glass','Glass'],['metal','Metal'],['ewaste','E-waste']];
+var BASE = { plastic: 42, paper: 36, glass: 28, metal: 15, ewaste: 7 }; // tenths of a kg, adds up to 12.8 kg
+var LB = 2.20462;
+var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+var DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+/* =====================================================================
+   STATE (saved in the browser)
+   ===================================================================== */
+var KEY = 'ecotrack-v1';
+var DEFAULTS = { name: 'EcoChampion', reminders: true, day: 'Monday', units: 'kg', goal: 20, log: [], nextId: 1, spent: 0, redeemed: {} };
+function load() {
+  var s = JSON.parse(JSON.stringify(DEFAULTS));
+  try {
+    var raw = window.localStorage.getItem(KEY);
+    if (raw) { var d = JSON.parse(raw); for (var k in s) if (d[k] !== undefined && typeof d[k] === typeof s[k]) s[k] = d[k]; }
+  } catch (e) {}
+  if (!Array.isArray(s.log)) s.log = [];
+  return s;
+}
+var S = load();
+function save() { try { window.localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+
+var UI = {
+  mapFilter: 'All', sortBig: false, material: 'plastic', kgText: '', err: '', msg: '',
+  nameErr: '', nameMsg: '', prefMsg: '', rewardMsg: '',
+  scan: { status: 'idle', err: '', photo: null, facing: 'environment', msg: '' }
+};
+var stream = null;
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+function $(id) { return document.getElementById(id); }
+function esc(v) { return String(v).replace(/[&<>"']/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]; }); }
+function announce(text) { var l = $('live'); l.textContent = ''; setTimeout(function () { l.textContent = text; }, 40); }
+function conv() { return S.units === 'lb' ? LB : 1; }
+function fmt(kg) { return (kg * conv()).toFixed(1); }
+
+var ICONS = {
+  home: '<path d="M3 11 12 3l9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  map: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  scan: '<path d="M4 8V5a1 1 0 0 1 1-1h3"/><path d="M16 4h3a1 1 0 0 1 1 1v3"/><path d="M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M8 12h8"/>',
+  rewards: '<circle cx="12" cy="9" r="5"/><path d="m8.5 13.5-1.5 7 5-3 5 3-1.5-7"/>',
+  more: '<circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/>',
+  camera: '<path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><circle cx="12" cy="13" r="3.5"/>',
+  bars: '<path d="M6 20v-6"/><path d="M12 20V9"/><path d="M18 20V4"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+  back: '<path d="m15 5-7 7 7 7"/>',
+  check: '<path d="m5 12 5 5 9-10"/>',
+  alert: '<circle cx="12" cy="12" r="9"/><path d="M12 7v6"/><path d="M12 16.5h.01"/>',
+  warn: '<path d="M12 3 2 20h20z"/><path d="M12 10v5"/><path d="M12 18h.01"/>',
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  minus: '<path d="M5 12h14"/>',
+  trash: '<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/>',
+  undo: '<path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+  logout: '<path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h4"/><path d="m16 8 4 4-4 4"/><path d="M20 12H9"/>',
+  arrow: '<path d="M5 12h14"/><path d="m13 6 6 6-6 6"/>',
+  bag: '<path d="M5 9h14l-1.2 10a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/>',
+  tree: '<path d="M12 21V11"/><path d="M12 11C12 6 8 4 4 4c0 4 2 7 8 7z"/><path d="M12 14c0-4 3-6 8-6 0 4-3 6-8 6z"/>',
+  gift: '<path d="M5 7h14v13H5z"/><path d="M3 7h18"/><path d="M12 7v13"/><path d="M12 7C12 4 9 3 8 4.5S9 7 12 7z"/><path d="M12 7c0-3 3-4 4-2.5S15 7 12 7z"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  flip: '<path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/>',
+  download: '<path d="M12 4v11"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/>'
+};
+function svg(name, size, sw) {
+  size = size || 24;
+  return '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="currentColor" stroke-width="' + (sw || 2) + '" stroke-linecap="round" stroke-linejoin="round">' + ICONS[name] + '</svg>';
+}
+
+/* =====================================================================
+   PROGRESS LOGIC
+   ===================================================================== */
+function calc() {
+  var amounts = {}, k, i;
+  for (k in BASE) amounts[k] = BASE[k];
+  for (i = 0; i < S.log.length; i++) amounts[S.log[i].key] += S.log[i].t;
+  var totalT = 0;
+  MATS.forEach(function (m) { totalT += amounts[m[0]]; });
+  var total = totalT / 10, goal = S.goal;
+  var pct = Math.min(100, Math.round(total / goal * 100));
+  var now = new Date(), day = now.getDate();
+  var dim = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  var projected = total / day * dim;
+  var unit = S.units, good = true, label = 'On track', text;
+  var goalText = S.units === 'kg' ? String(goal) : String(Math.round(goal * LB));
+  if (total >= goal) {
+    label = 'Goal reached';
+    text = 'You passed your ' + goalText + ' ' + unit + ' goal for ' + MONTHS[now.getMonth()] + '. Raise the goal to keep going.';
+  } else if (projected >= goal) {
+    text = 'At your pace of ' + fmt(total / day) + ' ' + unit + ' a day, you will reach about ' + fmt(projected) + ' ' + unit + ' by ' + MONTHS[now.getMonth()] + ' ' + dim + '.';
+  } else {
+    good = false; label = 'Behind pace';
+    var left = dim - day;
+    text = left <= 0
+      ? 'The month ends today. You are ' + fmt(goal - total) + ' ' + unit + ' short of your goal.'
+      : 'Log about ' + fmt((goal - total) / left) + ' ' + unit + ' a day over the next ' + left + (left === 1 ? ' day' : ' days') + ' to reach your goal.';
+  }
+  var rows = MATS.map(function (m) {
+    return { label: m[1], t: amounts[m[0]], amount: fmt(amounts[m[0]] / 10), share: totalT ? Math.round(amounts[m[0]] / totalT * 100) : 0 };
+  });
+  if (UI.sortBig) rows.sort(function (a, b) { return b.t - a.t; });
+  return { total: total, totalT: totalT, goal: goal, goalText: goalText, pct: pct, good: good, label: label, text: text, rows: rows, month: MONTHS[now.getMonth()] };
+}
+function entryText(e) { return fmt(e.t / 10) + ' ' + S.units + ' of ' + e.label.toLowerCase(); }
+
+/* =====================================================================
+   SCREENS
+   ===================================================================== */
+function splash() {
+  return '<div class="splash">' +
+    '<svg class="scene" aria-hidden="true" viewBox="0 0 390 420" preserveAspectRatio="xMidYMax slice">' +
+    '<rect x="14" y="170" width="34" height="180" fill="rgba(255,255,255,.10)"/><rect x="52" y="130" width="40" height="220" fill="rgba(255,255,255,.13)"/>' +
+    '<rect x="96" y="190" width="30" height="160" fill="rgba(255,255,255,.10)"/><rect x="268" y="150" width="36" height="200" fill="rgba(255,255,255,.12)"/>' +
+    '<rect x="308" y="110" width="44" height="240" fill="rgba(255,255,255,.14)"/><rect x="356" y="180" width="30" height="170" fill="rgba(255,255,255,.10)"/>' +
+    '<path d="M0 300 C80 250 160 270 240 290 C300 305 350 280 390 270 L390 420 L0 420 Z" fill="#3f9d55"/>' +
+    '<path d="M0 340 C100 310 190 340 280 335 C330 332 360 322 390 318 L390 420 L0 420 Z" fill="#2c8446"/>' +
+    '<ellipse cx="70" cy="300" rx="34" ry="38" fill="#2b8446"/><rect x="66" y="320" width="8" height="30" fill="#1d5f35"/>' +
+    '<ellipse cx="322" cy="296" rx="38" ry="42" fill="#2b8446"/><rect x="318" y="318" width="8" height="34" fill="#1d5f35"/>' +
+    '<ellipse cx="120" cy="320" rx="22" ry="26" fill="#348f4d"/><ellipse cx="270" cy="322" rx="24" ry="28" fill="#348f4d"/></svg>' +
+    '<div class="brand">' +
+    '<svg aria-hidden="true" viewBox="0 0 96 80" width="96" height="80"><path d="M46 72 C12 68 4 36 8 10 C40 12 56 36 46 72 Z" fill="#fff"/><path d="M50 72 C52 36 62 12 90 4 C96 36 84 66 50 72 Z" fill="#fff"/>' +
+    '<path d="M45 68 C34 50 22 34 12 16" fill="none" stroke="#23814a" stroke-width="3" stroke-linecap="round"/><path d="M51 68 C60 46 72 26 87 10" fill="none" stroke="#23814a" stroke-width="3" stroke-linecap="round"/></svg>' +
+    '<h1 tabindex="-1">EcoTrack</h1><p class="tag">Sort Today.<br>A Cleaner Tomorrow.</p></div>' +
+    '<div class="cta"><a class="btn" href="#/home">Get Started</a><a class="link" href="#/home">Log In</a></div></div>';
+}
+
+function home() {
+  var c = calc();
+  function tile(href, label, aria, icon, blue) {
+    return '<li style="display:flex"><a class="tile" style="flex:1" href="' + href + '" aria-label="' + esc(aria) + '"><span class="ic' + (blue ? ' blue' : '') + '" aria-hidden="true">' + svg(icon, 28) + '</span><span aria-hidden="true">' + label + '</span></a></li>';
+  }
+  return '<header class="hdr row"><div style="display:flex;flex-direction:column;gap:4px"><h1 class="title" tabindex="-1">Hello, ' + esc(S.name) + '!</h1><p class="sub">Small actions. Big impact.</p></div>' +
+    '<a class="avatar" href="#/account" aria-label="Your account: ' + esc(S.name) + '. Open profile and settings.">' + svg('user', 24) + '</a></header>' +
+    '<div class="pad" style="padding-top:8px">' +
+    '<section class="hero" aria-label="Total recycled this month" style="min-height:176px">' +
+    '<svg class="art" aria-hidden="true" viewBox="0 0 160 160" width="170" height="170"><path d="M80 150 C80 110 84 80 100 50" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="4" stroke-linecap="round"/><path d="M82 110 C56 108 42 90 40 66 C66 66 84 82 82 110 Z" fill="rgba(255,255,255,.28)"/><path d="M90 84 C92 56 110 36 140 34 C142 62 124 82 90 84 Z" fill="rgba(255,255,255,.4)"/><path d="M100 52 C96 34 104 18 120 10 C130 26 124 44 100 52 Z" fill="rgba(255,255,255,.5)"/></svg>' +
+    '<p style="font-size:16px;font-weight:600">Total Recycled</p><p class="big">' + fmt(c.total) + ' <small>' + S.units + '</small></p><p style="font-size:14px;font-weight:500">This month</p></section>' +
+    '<nav aria-label="Quick actions"><ul class="tiles">' +
+    tile('#/scan', 'Identify Waste', 'Identify Waste. Open the camera scanner.', 'camera', false) +
+    tile('#/map', 'Find Recycling Center', 'Find Recycling Center. Open the map of nearby centers.', 'map', true) +
+    tile('#/progress', 'Track Progress', 'Track Progress. Open your recycling totals and goal.', 'bars', false) +
+    '</ul></nav>' +
+    '<section class="banner" aria-label="Message of the day"><svg aria-hidden="true" viewBox="0 0 200 150" width="200" height="150"><path d="M0 150 C40 100 90 96 140 112 C170 122 190 118 200 112 L200 150 Z" fill="rgba(255,255,255,.16)"/><path d="M60 150 C90 120 130 118 200 132 L200 150 Z" fill="rgba(255,255,255,.14)"/><ellipse cx="150" cy="86" rx="22" ry="26" fill="rgba(255,255,255,.22)"/><rect x="147" y="104" width="6" height="26" fill="rgba(255,255,255,.22)"/><ellipse cx="180" cy="100" rx="14" ry="18" fill="rgba(255,255,255,.16)"/></svg><p>Less waste.<br>A healthier planet.</p></section>' +
+    '</div>';
+}
+
+function mapScreen() {
+  var f = UI.mapFilter;
+  var shown = CENTERS.filter(function (c) { return f === 'All' || c.mats.indexOf(f) >= 0; });
+  var n = shown.length;
+  var count = n + (n === 1 ? ' center' : ' centers') + ' found' + (f === 'All' ? '' : ', accepting ' + f.toLowerCase());
+  var chips = ['All','Plastic','Glass','Paper','Metal','E-waste'].map(function (l) {
+    return '<button class="chip" id="chip-' + l + '" data-action="filter" data-v="' + l + '" aria-pressed="' + (l === f) + '">' + (l === f ? svg('check', 16, 3) : '') + '<span>' + l + '</span></button>';
+  }).join('');
+  var pins = shown.map(function (c) {
+    return '<button class="pin" data-action="center" data-id="' + c.id + '" style="left:' + c.cx + '%;top:' + c.cy + '%" aria-label="' + esc(c.n + '. ' + c.name + ', ' + c.km.toFixed(1) + ' km away. ' + c.hours) + '">' + c.n + '</button>';
+  }).join('');
+  var list = shown.map(function (c) {
+    return '<li class="card center" id="' + c.id + '" tabindex="-1" style="display:flex;flex-direction:column;gap:8px">' +
+      '<div class="row" style="gap:12px"><span class="num" aria-hidden="true">' + c.n + '</span><h3 class="grow">' + esc(c.name) + '</h3><span style="font-size:14px;font-weight:700">' + c.km.toFixed(1) + ' km</span></div>' +
+      (c.open ? '<p class="open">' + svg('check', 18, 3) + '<span>' + c.hours + '</span></p>' : '<p class="closed">' + svg('alert', 18, 2.6) + '<span>' + c.hours + '</span></p>') +
+      '<p class="sub">Accepts: ' + c.mats.join(', ') + '</p>' +
+      '<a class="btn out sm" style="min-height:44px" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(c.name) + '" aria-label="Directions to ' + esc(c.name) + ' (opens in a new tab)">' + svg('arrow', 18, 2.4) + '<span>Directions</span></a></li>';
+  }).join('');
+  return '<header class="hdr"><h1 class="title" tabindex="-1">Recycling Centers</h1><p class="sub" id="map-count">' + count + '</p></header>' +
+    '<div style="padding:4px 20px 0;position:relative"><label for="q" class="sr-only">Search by city or ZIP code</label>' +
+    '<span style="position:absolute;left:36px;top:20px;color:var(--muted)">' + svg('search', 20) + '</span>' +
+    '<input id="q" type="search" placeholder="Search city or ZIP code" style="padding-left:44px;border-radius:24px"></div>' +
+    '<div class="chips" role="group" aria-label="Filter by material">' + chips + '</div>' +
+    '<section class="map" role="region" aria-label="Map of nearby recycling centers. The same centers are listed below the map.">' +
+    '<svg class="bg" aria-hidden="true" viewBox="0 0 350 200" preserveAspectRatio="xMidYMid slice"><rect width="350" height="200" fill="#dcebd8"/><path d="M-10 150 C60 120 120 170 190 140 C250 114 300 150 360 120 L360 160 C300 190 250 156 190 182 C120 210 60 160 -10 190 Z" fill="#bcd8ee"/><ellipse cx="300" cy="40" rx="60" ry="34" fill="#c4e0bc"/><ellipse cx="40" cy="30" rx="44" ry="26" fill="#c4e0bc"/><path d="M0 90 L350 70" stroke="#fff" stroke-width="10"/><path d="M110 0 L150 200" stroke="#fff" stroke-width="8"/><path d="M230 0 L250 200" stroke="#fff" stroke-width="6"/><path d="M0 40 L350 20" stroke="#f1f6ee" stroke-width="4"/></svg>' +
+    '<div class="me" aria-hidden="true"></div>' + pins + '<p class="legend">Blue dot: you are here</p></section>' +
+    '<div class="pad" style="padding-top:12px"><h2 class="h2" style="font-size:16px">Nearby, closest first</h2>' +
+    (n === 0 ? '<p class="card sub" style="color:var(--ink)">No nearby centers accept ' + f.toLowerCase() + ' right now.</p>' : '') +
+    '<ul aria-label="Recycling centers" style="display:flex;flex-direction:column;gap:12px">' + list + '</ul></div>';
+}
+
+function scanScreen() {
+  var sc = UI.scan, st = sc.status, body = '', controls = '';
+  var frame = '<svg class="frame" aria-hidden="true" viewBox="0 0 350 452" preserveAspectRatio="none" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><path d="M60 130 V86 a14 14 0 0 1 14 -14 H118"/><path d="M232 72 H276 a14 14 0 0 1 14 14 V130"/><path d="M290 322 V366 a14 14 0 0 1 -14 14 H232"/><path d="M118 380 H74 a14 14 0 0 1 -14 -14 V322"/></svg>';
+  if (st === 'idle') {
+    body = frame + '<div class="center-box">' + svg('camera', 48, 1.8) + '<p style="font-size:18px;font-weight:800">Camera is off</p><p class="s">EcoTrack only uses your camera while you scan. Nothing is saved until you take a photo.</p><button class="btn white" id="cam-start" data-action="cam-start">Turn on camera</button></div>';
+  } else if (st === 'starting') {
+    body = '<div class="center-box"><p style="font-size:16px;font-weight:700">Starting camera… allow access if your browser asks.</p></div>';
+  } else if (st === 'error') {
+    body = '<div class="center-box">' + svg('warn', 44, 1.8) + '<p style="font-size:18px;font-weight:800">Camera could not start</p><p class="s" role="alert">' + esc(sc.err) + '</p><button class="btn white" id="cam-start" data-action="cam-start">Try again</button></div>';
+  } else if (st === 'live') {
+    body = '<video id="cam" autoplay playsinline muted aria-label="Live camera preview"></video>' + frame;
+    controls = '<button class="btn out sm" style="min-height:48px" data-action="cam-stop">Turn off</button>' +
+      '<button class="shutter" id="cam-capture" data-action="cam-capture" aria-label="Take photo"><i></i></button>' +
+      '<button class="btn out sm" style="min-height:48px" data-action="cam-flip" aria-label="Switch between front and back camera">' + svg('flip', 18, 2.4) + '<span>Flip</span></button>';
+  } else if (st === 'captured') {
+    body = '<img src="' + sc.photo + '" alt="Photo you just captured of your item"><p class="badge">Photo captured</p>';
+    controls = '<button class="btn out sm" style="min-height:48px" id="cam-retake" data-action="cam-retake">Retake</button>' +
+      '<button class="btn sm" style="min-height:48px" data-action="cam-identify">Identify waste</button>';
+  }
+  return '<header class="hdr"><h1 class="title" tabindex="-1">Scan Waste</h1><p class="sub">Point your camera at an item to identify how to sort it.</p></header>' +
+    '<div class="cam" style="margin-top:4px">' + body + '</div>' +
+    '<div class="controls">' + controls + '</div>' +
+    '<p class="msg" style="padding:0 20px 20px;text-align:center">' + esc(sc.msg) + '</p>';
+}
+
+function rewardsScreen() {
+  var points = LIFETIME_POINTS - S.spent, total = calc().total;
+  var toNext = NEXT_LEVEL_AT - LIFETIME_POINTS, pct = Math.round(LIFETIME_POINTS / NEXT_LEVEL_AT * 100);
+  var items = REWARDS.map(function (r) {
+    var can = points >= r.cost, got = S.redeemed[r.id] || 0;
+    return '<li class="card row"><span class="ic" style="width:52px;height:52px;border-radius:26px;' + (can ? '' : 'background:#eceeea;color:var(--muted)') + '" aria-hidden="true">' + svg(r.icon, 26) + '</span>' +
+      '<div class="grow"><h3 style="font-size:15px;font-weight:800">' + r.name + '</h3><p class="sub" style="font-weight:600">' + r.cost.toLocaleString() + ' points' + (can ? '' : '. ' + (r.cost - points).toLocaleString() + ' more needed') + (got ? '. Redeemed ' + got + '×' : '') + '</p></div>' +
+      (can ? '<button class="btn sm" data-action="redeem" data-id="' + r.id + '" id="redeem-' + r.id + '" aria-label="Redeem ' + esc(r.name) + ' for ' + r.cost + ' points">Redeem</button>'
+           : '<button class="btn sm" disabled aria-label="' + esc(r.name) + ' is locked. You need ' + (r.cost - points) + ' more points.">Locked</button>') + '</li>';
+  }).join('');
+  function badge(label, on, state) {
+    return '<li class="card"><span class="badge-ic' + (on ? '' : ' off') + '" aria-hidden="true">' + svg(on ? 'check' : 'lock', 24, 2.4) + '</span><span>' + label + '</span><span style="font-weight:600;color:' + (on ? 'var(--brand)' : 'var(--muted)') + '">' + state + '</span></li>';
+  }
+  return '<header class="hdr"><h1 class="title" tabindex="-1">Rewards</h1><p class="sub">Every item you sort earns points.</p></header><div class="pad" style="padding-top:4px">' +
+    '<section class="hero" aria-labelledby="pt"><h2 id="pt" style="font-size:16px;font-weight:600">Your points</h2><p class="big" style="font-size:48px">' + points.toLocaleString() + '</p>' +
+    '<p style="font-size:14px;font-weight:600">Level ' + LEVEL + ': ' + esc(S.name) + '</p>' +
+    '<div class="bar" role="progressbar" aria-label="Progress to level ' + (LEVEL + 1) + '" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>' +
+    '<p style="font-size:13px;font-weight:600">' + toNext + ' points to level ' + (LEVEL + 1) + '</p></section>' +
+    '<p class="msg" id="reward-msg" style="margin:-8px 0 -8px">' + esc(UI.rewardMsg) + '</p>' +
+    '<section aria-labelledby="rd" style="display:flex;flex-direction:column;gap:12px"><h2 class="h2" id="rd">Redeem</h2><ul style="display:flex;flex-direction:column;gap:12px">' + items + '</ul></section>' +
+    '<section aria-labelledby="bd" style="display:flex;flex-direction:column;gap:12px"><h2 class="h2" id="bd">Badges</h2><ul class="badges">' +
+    badge('First sort', true, 'Earned') + badge('10 kg club', total >= 10, total >= 10 ? 'Earned' : 'Locked') + badge('25 kg club', total >= 25, total >= 25 ? 'Earned' : 'Locked') + '</ul></section></div>';
+}
+
+function progressScreen() {
+  var c = calc(), u = S.units, hasLog = S.log.length > 0;
+  var hist = S.log.slice().reverse().map(function (e) {
+    var t = entryText(e);
+    return '<li class="card row" style="padding:12px 12px 12px 16px;gap:12px;justify-content:space-between"><div><p style="font-size:15px;font-weight:700">' + esc(t) + '</p><p class="sub">Logged at ' + new Date(e.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + '</p></div>' +
+      '<button class="rm" data-action="remove" data-id="' + e.id + '" aria-label="Remove entry: ' + esc(t) + '">' + svg('trash', 20, 2.4) + '</button></li>';
+  }).join('');
+  var rows = c.rows.map(function (r) {
+    return '<li style="display:flex;flex-direction:column;gap:6px"><div style="display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:700"><span>' + r.label + '</span><span>' + r.amount + ' ' + u + ', ' + r.share + '%</span></div><div class="mbar" aria-hidden="true"><i style="width:' + r.share + '%"></i></div></li>';
+  }).join('');
+  var ms = [25, 50, 75, 100].map(function (m) {
+    var on = c.pct >= m;
+    return '<li><span style="font-size:15px;font-weight:800">' + m + '%</span><span style="font-size:12px;font-weight:' + (on ? 800 : 600) + ';color:' + (on ? 'var(--brand)' : 'var(--muted)') + '">' + (on ? 'Reached' : 'To go') + '</span></li>';
+  }).join('');
+  var minT = u === 'kg' ? '0.1' : '0.2', maxT = u === 'kg' ? '100' : '220';
+  var opts = MATS.map(function (m) { return '<option value="' + m[0] + '"' + (UI.material === m[0] ? ' selected' : '') + '>' + m[1] + '</option>'; }).join('');
+  return '<header class="hdr" style="padding-top:16px"><a class="back" href="#/home">' + svg('back', 22, 2.4) + '<span>Back to Home</span></a><h1 class="title" tabindex="-1">Track Progress</h1></header><div class="pad">' +
+    '<section class="hero" aria-labelledby="mt" style="padding:20px;gap:8px"><h2 id="mt" style="font-size:15px;font-weight:600">Recycled in ' + c.month + '</h2>' +
+    '<p class="big" style="font-size:44px">' + fmt(c.total) + ' <small style="font-size:22px">' + u + '</small></p>' +
+    '<div class="bar" role="progressbar" aria-label="Progress toward monthly goal" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + c.pct + '" aria-valuetext="' + c.pct + ' percent of your ' + c.goalText + ' ' + u + ' goal"><i style="width:' + c.pct + '%"></i></div>' +
+    '<p style="font-size:14px;font-weight:600">' + c.pct + '% of ' + c.goalText + ' ' + u + ' goal. ' + (c.total >= c.goal ? 'Goal reached. Great work!' : fmt(c.goal - c.total) + ' ' + u + ' to go.') + '</p>' +
+    '<div role="group" aria-label="Monthly goal" style="display:flex;align-items:center;gap:12px;margin-top:4px">' +
+    '<button class="circle" id="goal-down" data-action="goal-down" aria-label="Decrease monthly goal by 5 kilograms">' + svg('minus', 22, 3) + '</button>' +
+    '<p style="flex:1;text-align:center;font-size:15px;font-weight:700">Goal: ' + c.goalText + ' ' + u + '</p>' +
+    '<button class="circle" id="goal-up" data-action="goal-up" aria-label="Increase monthly goal by 5 kilograms">' + svg('plus', 22, 3) + '</button></div></section>' +
+
+    '<section class="card" aria-labelledby="pc" style="display:flex;flex-direction:column;gap:10px"><h2 class="h2" id="pc">Monthly pace</h2>' +
+    '<p class="pace ' + (c.good ? 'good' : 'bad') + '">' + svg(c.good ? 'check' : 'alert', 16, 3) + '<span>' + c.label + '</span></p>' +
+    '<p style="font-size:14px;font-weight:500;line-height:1.45">' + esc(c.text) + '</p><ul class="ms" aria-label="Goal milestones">' + ms + '</ul></section>' +
+
+    '<section aria-labelledby="mat" style="display:flex;flex-direction:column;gap:12px"><div class="row" style="justify-content:space-between;gap:12px"><h2 class="h2" id="mat">By material</h2>' +
+    '<button class="chip" id="sort" data-action="sort" aria-pressed="' + UI.sortBig + '" style="min-height:44px;font-size:13px">Largest first</button></div>' +
+    '<ul class="card" style="display:flex;flex-direction:column;gap:14px">' + rows + '</ul></section>' +
+
+    '<section aria-labelledby="lg" style="display:flex;flex-direction:column;gap:12px"><h2 class="h2" id="lg">Log recycling</h2>' +
+    '<form class="card" data-form="log" style="display:flex;flex-direction:column;gap:12px" novalidate>' +
+    '<div class="field"><label for="material">Material</label><select id="material" data-change="material">' + opts + '</select></div>' +
+    '<div class="field"><label for="weight">Weight in ' + (u === 'kg' ? 'kilograms' : 'pounds') + '</label>' +
+    '<input id="weight" type="number" inputmode="decimal" min="0" step="0.1" placeholder="' + (u === 'kg' ? '0.5' : '1.0') + '" value="' + esc(UI.kgText) + '" data-input="kgText"' + (UI.err ? ' aria-invalid="true"' : '') + ' aria-describedby="weight-hint' + (UI.err ? ' weight-error' : '') + '">' +
+    '<p class="hint" id="weight-hint">Use a number from ' + minT + ' to ' + maxT + ', for example ' + (u === 'kg' ? '0.5' : '1.0') + '.</p>' +
+    (UI.err ? '<p class="error" id="weight-error" role="alert">' + svg('alert', 18, 2.4) + '<span>' + esc(UI.err) + '</span></p>' : '') + '</div>' +
+    '<button class="btn" type="submit">Add to my total</button><p class="msg">' + esc(UI.msg) + '</p></form></section>' +
+
+    '<section aria-labelledby="hs" style="display:flex;flex-direction:column;gap:12px"><div class="row" style="justify-content:space-between;gap:12px"><h2 class="h2" id="hs">Your entries</h2>' +
+    (hasLog ? '<button class="btn out sm" id="undo" data-action="undo">' + svg('undo', 16, 2.6) + '<span>Undo last</span></button>' : '') + '</div>' +
+    (hasLog ? '' : '<p class="card sub">No entries yet. Items you log appear here, and you can remove any of them.</p>') +
+    '<ul aria-label="Logged entries, newest first" style="display:flex;flex-direction:column;gap:10px">' + hist + '</ul></section>' +
+
+    '<section aria-labelledby="un" style="display:flex;flex-direction:column;gap:10px"><h2 class="h2" id="un">Units</h2>' + unitsSeg('prog') + '</section></div>';
+}
+
+function unitsSeg(prefix) {
+  return '<div class="seg" role="group" aria-labelledby="' + (prefix === 'prog' ? 'un' : 'units-label') + '">' +
+    '<button class="chip" id="' + prefix + '-kg" data-action="units" data-v="kg" aria-pressed="' + (S.units === 'kg') + '">' + (S.units === 'kg' ? svg('check', 16, 3) : '') + '<span>Kilograms</span></button>' +
+    '<button class="chip" id="' + prefix + '-lb" data-action="units" data-v="lb" aria-pressed="' + (S.units === 'lb') + '">' + (S.units === 'lb' ? svg('check', 16, 3) : '') + '<span>Pounds</span></button></div>';
+}
+
+function accountScreen() {
+  var c = calc();
+  var days = DAYS.map(function (d) { return '<option' + (S.day === d ? ' selected' : '') + '>' + d + '</option>'; }).join('');
+  return '<header class="hdr" style="padding-top:16px"><a class="back" href="#/home">' + svg('back', 22, 2.4) + '<span>Back to Home</span></a><h1 class="title" tabindex="-1">Account</h1></header><div class="pad">' +
+    '<section class="card row" aria-label="Profile summary" style="padding:18px;gap:16px"><span class="ic" style="width:64px;height:64px;border-radius:32px" aria-hidden="true">' + svg('user', 32) + '</span>' +
+    '<div style="min-width:0"><h2 style="font-size:20px;font-weight:800;overflow-wrap:anywhere">' + esc(S.name) + '</h2><p class="sub" style="font-weight:600">Level ' + LEVEL + '. This month: ' + fmt(c.total) + ' ' + S.units + '</p></div></section>' +
+    '<section aria-labelledby="nm" style="display:flex;flex-direction:column;gap:12px"><h2 class="h2" id="nm">Display name</h2>' +
+    '<form class="card" data-form="name" style="display:flex;flex-direction:column;gap:10px" novalidate><label for="display-name">Name shown on Home</label>' +
+    '<input id="display-name" type="text" autocomplete="nickname" maxlength="40" value="' + esc(S.name) + '"' + (UI.nameErr ? ' aria-invalid="true"' : '') + ' aria-describedby="name-hint' + (UI.nameErr ? ' name-error' : '') + '">' +
+    '<p class="hint" id="name-hint">Up to 24 characters.</p>' +
+    (UI.nameErr ? '<p class="error" id="name-error" role="alert">' + svg('alert', 18, 2.4) + '<span>' + esc(UI.nameErr) + '</span></p>' : '') +
+    '<button class="btn" type="submit" style="min-height:48px;font-size:15px">Save name</button><p class="msg">' + esc(UI.nameMsg) + '</p></form></section>' +
+    '<section aria-labelledby="pf" style="display:flex;flex-direction:column;gap:12px"><h2 class="h2" id="pf">Preferences</h2><div class="card" style="display:flex;flex-direction:column;gap:16px">' +
+    '<div class="row" style="justify-content:space-between;gap:12px"><div><span id="rl" style="font-size:15px;font-weight:700;display:block">Pickup reminders</span><span id="rd2" class="hint">A weekly nudge to put out your sorted waste.</span></div>' +
+    '<button class="switch" id="rem" role="switch" aria-checked="' + S.reminders + '" aria-labelledby="rl" aria-describedby="rd2" data-action="reminders"><span>' + (S.reminders ? 'On' : 'Off') + '</span><i></i></button></div>' +
+    (S.reminders ? '<div class="field"><label for="day">Remind me every</label><select id="day" data-change="day">' + days + '</select></div>' : '') +
+    '<div style="display:flex;flex-direction:column;gap:8px"><span id="units-label" style="font-size:15px;font-weight:700">Measurement units</span>' + unitsSeg('acct') + '</div>' +
+    '<p class="msg">' + esc(UI.prefMsg) + '</p></div></section>' +
+    '<a class="btn out" href="#/splash">' + svg('logout', 20, 2.2) + '<span>Log out</span></a>' +
+    '<button class="reset" data-action="reset" style="align-self:center">Reset demo data</button></div>';
+}
+
+var SCREENS = {
+  splash:   { title: 'Welcome',        html: splash },
+  home:     { title: 'Home',           html: home },
+  map:      { title: 'Recycling Centers', html: mapScreen },
+  scan:     { title: 'Scan Waste',     html: scanScreen },
+  rewards:  { title: 'Rewards',        html: rewardsScreen },
+  account:  { title: 'Account',        html: accountScreen },
+  progress: { title: 'Track Progress', html: progressScreen }
+};
+var TAB_FOR = { home: 'home', map: 'map', scan: 'scan', rewards: 'rewards', account: 'account' };
+var TABS = [['home','Home','home'],['map','Map','map'],['scan','Scan','scan'],['rewards','Rewards','rewards'],['account','More','more']];
+
+/* =====================================================================
+   ROUTER + RENDER
+   ===================================================================== */
+var forced = null;
+function route() {
+  var r = forced || (window.location.hash || '').replace(/^#\/?/, '');
+  return SCREENS[r] ? r : 'splash';
+}
+var current = null;
+
+function paintTabs(r) {
+  var el = $('tabs');
+  if (r === 'splash') { el.hidden = true; el.innerHTML = ''; return; }
+  el.hidden = false;
+  el.innerHTML = TABS.map(function (t) {
+    var on = TAB_FOR[r] === t[0];
+    return '<a class="tab' + (on ? ' on' : '') + '" href="#/' + t[0] + '"' + (on ? ' aria-current="page"' : '') + '><i aria-hidden="true"></i>' + svg(t[2], 24) + '<span>' + t[1] + '</span></a>';
+  }).join('');
+}
+
+function afterRender() {
+  if (current === 'scan' && stream) {
+    var v = $('cam');
+    if (v) { v.srcObject = stream; v.muted = true; var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+  }
+}
+
+function render(focusId) {
+  var el = $('screen'), saved = null;
+  var a = document.activeElement;
+  if (!focusId && a && a.id && el.contains(a)) {
+    saved = { id: a.id, s: a.selectionStart, e: a.selectionEnd };
+  }
+  var top = el.scrollTop;
+  el.innerHTML = SCREENS[current].html();
+  el.scrollTop = top;
+  afterRender();
+  var target = focusId || (saved && saved.id);
+  if (target && $(target)) {
+    $(target).focus({ preventScroll: true });
+    if (saved && saved.s != null && $(target).setSelectionRange) { try { $(target).setSelectionRange(saved.s, saved.e); } catch (e) {} }
+  }
+}
+
+function go() {
+  var r = route();
+  if (current === 'scan' && r !== 'scan') { stopStream(); UI.scan.status = 'idle'; UI.scan.msg = ''; }
+  current = r;
+  document.title = SCREENS[r].title + ' | EcoTrack';
+  paintTabs(r);
+  $('screen').scrollTop = 0;
+  render();
+  var h = $('screen').querySelector('h1');
+  if (h) h.focus({ preventScroll: true });
+  announce(SCREENS[r].title);
+}
+
+/* =====================================================================
+   CAMERA
+   ===================================================================== */
+function stopStream() {
+  if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+}
+function openCamera(facing) {
+  stopStream();
+  var sc = UI.scan; sc.facing = facing; sc.msg = ''; sc.photo = null;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    sc.status = 'error';
+    sc.err = 'This browser or device does not offer camera access here. Open EcoTrack from a secure (https) address or localhost.';
+    render('cam-start'); return;
+  }
+  sc.status = 'starting'; render();
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: facing } }, audio: false }).then(function (s) {
+    if (current !== 'scan') { s.getTracks().forEach(function (t) { t.stop(); }); return; }
+    stream = s; sc.status = 'live'; render('cam-capture'); announce('Camera on.');
+  }).catch(function (e) {
+    var n = e && e.name, m = 'Something went wrong while starting the camera. Please try again.';
+    if (n === 'NotAllowedError' || n === 'SecurityError') m = 'Camera access is blocked. Allow the camera for this page in your browser or device settings, then try again.';
+    else if (n === 'NotFoundError' || n === 'OverconstrainedError') m = 'No camera was found on this device.';
+    else if (n === 'NotReadableError') m = 'Another app is using the camera. Close it and try again.';
+    sc.status = 'error'; sc.err = m; render('cam-start');
+  });
+}
+function capture() {
+  var v = $('cam'), sc = UI.scan;
+  if (!v) return;
+  var cv = document.createElement('canvas');
+  cv.width = v.videoWidth || 640; cv.height = v.videoHeight || 480;
+  cv.getContext('2d').drawImage(v, 0, 0, cv.width, cv.height);
+  sc.photo = cv.toDataURL('image/jpeg', 0.85);
+  stopStream();
+  sc.status = 'captured'; sc.msg = '';
+  render('cam-retake'); announce('Photo captured.');
+}
+/* Hook up your waste classifier here. It receives the photo as a data URL. */
+function identifyWaste(photoDataUrl) { return null; }
+
+/* =====================================================================
+   ACTIONS
+   ===================================================================== */
+var ACTIONS = {
+  'filter': function (el) {
+    UI.mapFilter = el.getAttribute('data-v'); render('chip-' + UI.mapFilter);
+    var c = $('map-count'); if (c) announce(c.textContent);
+  },
+  'center': function (el) {
+    var li = $(el.getAttribute('data-id'));
+    if (li) { li.scrollIntoView({ block: 'center' }); li.focus({ preventScroll: true }); }
+  },
+  'sort': function () { UI.sortBig = !UI.sortBig; render('sort'); },
+  'goal-down': function () { S.goal = Math.max(5, S.goal - 5); save(); goalMsg('goal-down'); },
+  'goal-up': function () { S.goal = Math.min(100, S.goal + 5); save(); goalMsg('goal-up'); },
+  'units': function (el) {
+    S.units = el.getAttribute('data-v'); UI.kgText = ''; UI.err = '';
+    UI.msg = UI.prefMsg = 'Showing ' + (S.units === 'kg' ? 'kilograms' : 'pounds') + '.'; save(); render(el.id); announce(UI.msg);
+  },
+  'undo': function () {
+    if (!S.log.length) return;
+    var last = S.log.pop(); save(); UI.msg = 'Removed ' + entryText(last) + '.'; render(S.log.length ? 'undo' : 'weight'); announce(UI.msg);
+  },
+  'remove': function (el) {
+    var id = Number(el.getAttribute('data-id')), hit = null;
+    S.log = S.log.filter(function (e) { if (e.id === id) hit = e; return e.id !== id; });
+    save(); UI.msg = hit ? 'Removed ' + entryText(hit) + '.' : ''; render('weight'); announce(UI.msg);
+  },
+  'reminders': function () {
+    S.reminders = !S.reminders; save();
+    UI.prefMsg = S.reminders ? 'Pickup reminders on, every ' + S.day + '.' : 'Pickup reminders off.'; render('rem'); announce(UI.prefMsg);
+  },
+  'reset': function () {
+    S = JSON.parse(JSON.stringify(DEFAULTS)); save(); UI.msg = UI.nameMsg = UI.prefMsg = UI.err = UI.nameErr = ''; UI.kgText = '';
+    render('screen'); announce('Demo data reset.');
+  },
+  'redeem': function (el) {
+    var r = REWARDS.filter(function (x) { return x.id === el.getAttribute('data-id'); })[0];
+    if (!r || LIFETIME_POINTS - S.spent < r.cost) return;
+    S.spent += r.cost; S.redeemed[r.id] = (S.redeemed[r.id] || 0) + 1; save();
+    UI.rewardMsg = 'Redeemed ' + r.name + '. ' + (LIFETIME_POINTS - S.spent).toLocaleString() + ' points left.';
+    render('reward-msg'); announce(UI.rewardMsg);
+  },
+  'cam-start': function () { openCamera(UI.scan.facing); },
+  'cam-stop': function () { stopStream(); UI.scan.status = 'idle'; render('cam-start'); announce('Camera off.'); },
+  'cam-flip': function () { openCamera(UI.scan.facing === 'environment' ? 'user' : 'environment'); },
+  'cam-capture': capture,
+  'cam-retake': function () { openCamera(UI.scan.facing); },
+  'cam-identify': function () {
+    var r = identifyWaste(UI.scan.photo);
+    UI.scan.msg = r ? String(r) : 'Waste identification is not connected yet. Add your classifier in identifyWaste().';
+    render(); announce(UI.scan.msg);
+  }
+};
+function goalMsg(id) {
+  var g = S.units === 'kg' ? S.goal : Math.round(S.goal * LB);
+  UI.msg = 'Monthly goal set to ' + g + ' ' + S.units + '.'; render(id); announce(UI.msg);
+}
+
+var FORMS = {
+  log: function () {
+    var raw = ($('weight') || {}).value, v = parseFloat(raw), t = Math.round(v / conv() * 10);
+    var lo = S.units === 'kg' ? '0.1' : '0.2', hi = S.units === 'kg' ? '100' : '220';
+    UI.kgText = raw == null ? '' : raw;
+    if (!(v > 0) || t < 1 || t > 1000) {
+      UI.err = 'Enter a weight between ' + lo + ' and ' + hi + ' ' + S.units + '.'; UI.msg = ''; render('weight'); return;
+    }
+    var m = MATS.filter(function (x) { return x[0] === UI.material; })[0];
+    S.log.push({ id: S.nextId++, key: m[0], label: m[1], t: t, at: Date.now() }); save();
+    UI.kgText = ''; UI.err = '';
+    UI.msg = 'Added ' + fmt(t / 10) + ' ' + S.units + ' of ' + m[1].toLowerCase() + '. Total in ' + calc().month + ': ' + fmt(calc().total) + ' ' + S.units + '.';
+    render('weight'); announce(UI.msg);
+  },
+  name: function () {
+    var v = (($('display-name') || {}).value || '').trim();
+    if (!v) { UI.nameErr = 'Enter a name to show on Home.'; UI.nameMsg = ''; render('display-name'); return; }
+    if (v.length > 24) { UI.nameErr = 'Use 24 characters or fewer.'; UI.nameMsg = ''; render('display-name'); return; }
+    S.name = v; save(); UI.nameErr = ''; UI.nameMsg = 'Name saved as ' + v + '.'; render('display-name'); announce(UI.nameMsg);
+  }
+};
+
+document.addEventListener('click', function (e) {
+  var el = e.target.closest ? e.target.closest('[data-action]') : null;
+  if (el && ACTIONS[el.getAttribute('data-action')]) ACTIONS[el.getAttribute('data-action')](el, e);
+});
+document.addEventListener('submit', function (e) {
+  var f = e.target.getAttribute && e.target.getAttribute('data-form');
+  if (f && FORMS[f]) { e.preventDefault(); FORMS[f](); }
+});
+document.addEventListener('input', function (e) {
+  var k = e.target.getAttribute && e.target.getAttribute('data-input');
+  if (k) UI[k] = e.target.value;
+});
+document.addEventListener('change', function (e) {
+  var k = e.target.getAttribute && e.target.getAttribute('data-change');
+  if (k === 'material') UI.material = e.target.value;
+  if (k === 'day') { S.day = e.target.value; save(); UI.prefMsg = 'Reminder day set to ' + S.day + '.'; render('day'); announce(UI.prefMsg); }
+});
+document.addEventListener('click', function (e) {
+  var a = e.target.closest ? e.target.closest('a[href^="#/"]') : null;
+  if (a) {
+    e.preventDefault();
+    forced = a.getAttribute('href').slice(2);
+    try { history.replaceState(null, '', a.getAttribute('href')); } catch (x) {}
+    go();
+  }
+});
+window.addEventListener('hashchange', function () { forced = null; go(); });
+window.addEventListener('pagehide', stopStream);
+go();
+})();
+</script>
+
+</body></html>
